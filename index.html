@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuis PPLG - Multi Topik</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f7f9;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background-color: #1e3a8a;
+      color: white;
+    }
+    header img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1e3a8a;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .options label {
+      display: block;
+      padding: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      transition: background 0.2s;
+    }
+    .options label:hover {
+      background-color: #e0e7ff;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #1e3a8a;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3749a2;
+    }
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #d1fae5;
+      border-left: 5px solid #10b981;
+      border-radius: 5px;
+      display: none;
+    }
+    .correct {
+      background-color: #d1fae5;
+      border-color: #10b981;
+    }
+    .incorrect {
+      background-color: #fee2e2;
+      border-color: #ef4444;
+    }
+    .feedback {
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    @media screen and (max-width: 600px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://edwaranas11.github.io/soal-pplg1/LOGO%20SMK.png" alt="Logo Sekolah" />
+    <h1>Kuis PPLG - Multi Topik</h1>
+    <p>Oleh Edwar Anas, S.Kom</p>
+  </header>
+
+  <div class="container" id="quiz-container">
+    <form id="quizForm"></form>
+    <div class="result" id="resultBox"></div>
+    <button type="button" onclick="submitQuiz()">Selesai</button>
+    <button type="button" onclick="location.reload()" style="display: none;" id="retryBtn">Coba Lagi</button>
+  </div>
+
+  <script>
+    const questions = [
+      // Cloud Computing & Teknologi Awan
+      { question: "1. Layanan komputasi awan yang menyediakan infrastruktur dasar seperti server, storage, dan jaringan disebut…", options: ["IaaS", "PaaS", "SaaS", "DBaaS"], answer: 0 },
+      { question: "2. Contoh layanan SaaS yang populer adalah…", options: ["Google Drive", "Microsoft Azure", "Amazon EC2", "VMware ESXi"], answer: 0 },
+      { question: "3. Keuntungan utama cloud computing bagi perusahaan adalah…", options: ["Biaya operasional lebih tinggi", "Akses terbatas hanya di kantor", "Skalabilitas dan fleksibilitas", "Tidak memerlukan internet"], answer: 2 },
+      { question: "4. Model cloud yang digunakan secara khusus oleh satu organisasi adalah…", options: ["Public Cloud", "Private Cloud", "Hybrid Cloud", "Community Cloud"], answer: 1 },
+      { question: "5. Layanan cloud yang menyediakan platform untuk pengembangan aplikasi tanpa perlu mengelola infrastruktur adalah…", options: ["SaaS", "PaaS", "IaaS", "CaaS"], answer: 1 },
+
+      // Game Development
+      { question: "6. Engine game yang banyak digunakan untuk membuat game 2D dan 3D adalah…", options: ["Photoshop", "Unity", "AutoCAD", "Blender"], answer: 1 },
+      { question: "7. Dalam pengembangan game, FPS berarti…", options: ["Frame Per Second", "Fast Processing Speed", "File Processing System", "First Programming Setup"], answer: 0 },
+      { question: "8. Bahasa pemrograman utama yang digunakan di Unity adalah…", options: ["Java", "C#", "Python", "C++"], answer: 1 },
+      { question: "9. Genre game yang menekankan pada strategi dan pengelolaan sumber daya adalah…", options: ["RPG", "RTS", "FPS", "MOBA"], answer: 1 },
+      { question: "10. Salah satu tahapan penting dalam pembuatan game sebelum rilis adalah…", options: ["Debugging dan Testing", "Menghapus semua script", "Mengabaikan feedback", "Melewati tahap desain"], answer: 0 },
+
+      // Sistem Operasi
+      { question: "11. Sistem operasi yang bersifat open source dan sering digunakan di server adalah…", options: ["Windows", "Linux", "macOS", "DOS"], answer: 1 },
+      { question: "12. Kernel dalam sistem operasi berfungsi untuk…", options: ["Menjalankan aplikasi game", "Menghubungkan hardware dengan software", "Meningkatkan kecepatan internet", "Menghapus file otomatis"], answer: 1 },
+      { question: "13. Contoh sistem operasi mobile yang populer adalah…", options: ["Ubuntu", "Windows 7", "Android", "MS-DOS"], answer: 2 },
+      { question: "14. Sistem operasi yang dikembangkan oleh Apple untuk komputer Mac adalah…", options: ["iOS", "Windows", "macOS", "Linux Mint"], answer: 2 },
+      { question: "15. Tugas utama sistem operasi adalah…", options: ["Mengelola sumber daya komputer", "Membuat desain grafis", "Menulis kode program", "Menghubungkan internet"], answer: 0 }
+    ];
+
+    const quizForm = document.getElementById("quizForm");
+    questions.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<h2>${q.question}</h2><div class="options">` +
+        q.options.map((opt, i) => `
+          <label>
+            <input type="radio" name="q${index}" value="${i}"/> ${opt}
+          </label>`).join("") +
+        `</div><div class="feedback" id="feedback${index}"></div>`;
+      quizForm.appendChild(div);
+    });
+
+    function submitQuiz() {
+      const answers = questions.map((_, i) =>
+        document.querySelector(`input[name="q${i}"]:checked`)
+      );
+
+      if (answers.includes(null)) {
+        alert("Silakan jawab semua soal terlebih dahulu!");
+        return;
+      }
+
+      let score = 0;
+      answers.forEach((ans, i) => {
+        const correct = questions[i].answer;
+        const feedbackEl = document.getElementById(`feedback${i}`);
+        const labels = document.querySelectorAll(`input[name="q${i}"]`);
+
+        labels.forEach(input => {
+          const label = input.closest("label");
+          label.classList.remove("correct", "incorrect");
+          if (parseInt(input.value) === correct) {
+            label.classList.add("correct");
+          }
+        });
+
+        if (parseInt(ans.value) === correct) {
+          score++;
+          feedbackEl.textContent = "✔ Benar";
+          feedbackEl.style.color = "green";
+        } else {
+          feedbackEl.textContent = `✖ Salah. Jawaban yang benar: ${questions[i].options[correct]}`;
+          feedbackEl.style.color = "red";
+          ans.closest("label").classList.add("incorrect");
+        }
+      });
+
+      const resultBox = document.getElementById("resultBox");
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `<strong>Skor Kamu: ${score} / ${questions.length}</strong><br>Terus semangat belajar ya!`;
+
+      document.querySelector("button[onclick='submitQuiz()']").style.display = "none";
+      document.getElementById("retryBtn").style.display = "inline-block";
+    }
+  </script>
+</body>
+</html>
